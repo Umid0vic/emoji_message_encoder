@@ -302,6 +302,9 @@
             width: 90%;
             color: white;
             transition: transform 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: 1rem;
         }
     
         .modal.show .modal-content {
@@ -415,8 +418,29 @@
             }
     
             .modal-content {
-                padding: 1.5rem;
-                width: 95%;
+                padding: 1rem;
+                width: calc(100% - 2rem);
+                max-height: calc(100% - 4rem);
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .modal-header {
+                position: sticky;
+                top: 0;
+                background: rgba(15, 32, 39, 0.9);
+                padding: 0.5rem 0;
+                z-index: 2;
+                backdrop-filter: blur(10px);
+            }
+
+            .modal-close {
+                padding: 0.5rem;
+                font-size: 1.25rem;
+            }
+
+            .modal-body {
+                padding-bottom: 1rem;
             }
         }
     </style>
@@ -585,6 +609,7 @@
 
         function openModal() {
             const modal = document.getElementById('infoModal');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
             modal.style.display = 'block';
             setTimeout(() => {
                 modal.classList.add('show');
@@ -593,26 +618,33 @@
 
         function closeModal() {
             const modal = document.getElementById('infoModal');
+            document.body.style.overflow = ''; // Restore scrolling
             modal.classList.remove('show');
             setTimeout(() => {
                 modal.style.display = 'none';
             }, 300);
         }
 
-        // Close modal when clicking outside
+        // Update the window click handler
         window.onclick = function(event) {
             const modal = document.getElementById('infoModal');
             if (event.target === modal) {
                 closeModal();
             }
-        }
+        };
 
-        // Initialize character counts
-        document.addEventListener('DOMContentLoaded', function() {
-            updateCharCount(document.getElementById("textInput"));
-            const resultText = document.getElementById("resultText");
-            if (resultText) {
-                updateCharCount(resultText);
+        // Add touch event handler for mobile
+        document.addEventListener('touchstart', function(event) {
+            const modal = document.getElementById('infoModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Add escape key handler
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
             }
         });
     </script>
