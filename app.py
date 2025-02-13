@@ -1,7 +1,15 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, send_from_directory
+from dotenv import load_dotenv
+import os
 import random
 
+load_dotenv()  # Load environment variables
+
 app = Flask(__name__)
+
+ADSENSE_CLIENT_ID = os.getenv('ADSENSE_CLIENT_ID')
+ADSENSE_SLOT_TOP = os.getenv('ADSENSE_SLOT_TOP')
+ADSENSE_SLOT_BOTTOM = os.getenv('ADSENSE_SLOT_BOTTOM')
 
 EMOJIS = ["😀", "😃", "😄", "😁", "😆", "🥰", "🤩", "😎", "👻", "🤖"]
 MAX_LENGTH = 5000
@@ -61,7 +69,15 @@ def index():
             result = encode_message(user_input)
         elif action == "decode":
             result = decode_message(user_input)
-    return render_template("index.html", result=result)
+    return render_template("index.html", 
+                         result=result,
+                         adsense_client_id=ADSENSE_CLIENT_ID,
+                         adsense_slot_top=ADSENSE_SLOT_TOP,
+                         adsense_slot_bottom=ADSENSE_SLOT_BOTTOM)
+
+@app.route('/ads.txt')
+def ads_txt():
+    return send_from_directory('static', 'ads.txt')
 
 if __name__ == "__main__":
     app.run(debug=True)
