@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret Emoji Messenger</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-gradient: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.18);
+        }
+    
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+    
+        body {
+            min-height: 100vh;
+            background: linear-gradient(45deg, #0F2027, #203A43, #2C5364);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 2rem;
+        }
+    
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 1rem;
+        }
+    
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            padding: 2.5rem;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+    
+        .title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+    
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+    
+        .emoji-float {
+            font-size: 1.5rem;
+            animation: float 6s ease-in-out infinite;
+            margin: 0 0.5rem;
+        }
+    
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+    
+        .input-container {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+    
+        .clear-input {
+            position: absolute;
+            right: 0.75rem;
+            top: 0.75rem;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+            z-index: 2;
+        }
+    
+        .clear-input:hover {
+            color: white;
+        }
+    
+        textarea {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1rem;
+            padding-right: 2.5rem;
+            color: white;
+            font-size: 1rem;
+            resize: none;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+    
+        textarea:focus {
+            outline: none;
+            border-color: #4ECDC4;
+            box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.2);
+        }
+    
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+    
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+    
+        .btn-primary {
+            background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+            color: white;
+        }
+    
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid var(--glass-border);
+        }
+    
+        .btn-success {
+            background: linear-gradient(135deg, #4ECDC4, #2ECC71);
+            color: white;
+        }
+    
+        .btn-danger {
+            background: linear-gradient(135deg, #FF6B6B, #FF4949);
+            color: white;
+        }
+    
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+    
+        .result-container {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            position: relative;
+        }
+    
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+    
+        .result-title {
+            font-size: 1.2rem;
+            color: #4ECDC4;
+        }
+    
+        .result-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+    
+        .icon-button {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+    
+        .icon-button:hover {
+            color: white;
+            transform: translateY(-2px);
+        }
+    
+        .character-count {
+            position: absolute;
+            right: 1rem;
+            bottom: 0.25rem;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+    
+        #resultText {
+            margin-bottom: 2rem;
+        }
+    
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+    
+        .toast.show {
+            opacity: 1;
+        }
+    
+        .info-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+    
+        .info-button:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+    
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+    
+        .modal.show {
+            opacity: 1;
+        }
+    
+        .modal-content {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            padding: 2.5rem;
+            max-width: 600px;
+            width: 90%;
+            color: white;
+            transition: transform 0.3s ease;
+        }
+    
+        .modal.show .modal-content {
+            transform: translate(-50%, -50%) scale(1);
+        }
+    
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+    
+        .modal-title {
+            font-size: 1.5rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    
+        .modal-close {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+    
+        .modal-close:hover {
+            color: white;
+        }
+    
+        .modal-body {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+    
+        .modal-body h3 {
+            color: #4ECDC4;
+            margin: 1rem 0 0.5rem 0;
+        }
+    
+        .modal-body p {
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+    
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem;
+            }
+    
+            .container {
+                padding: 0.5rem;
+            }
+            
+            .glass-card {
+                padding: 1.5rem 1rem;
+            }
+    
+            .title {
+                font-size: 1.75rem;
+                flex-wrap: wrap;
+                padding: 0 1rem;
+            }
+    
+            .subtitle {
+                font-size: 1rem;
+                padding: 0 0.5rem;
+            }
+    
+            .button-group {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+    
+            .btn {
+                width: 100%;
+                justify-content: center;
+                padding: 0.75rem 1rem;
+            }
+    
+            .clear-input {
+                right: 0.5rem;
+                top: 0.5rem;
+            }
+    
+            .character-count {
+                bottom: 0.5rem;
+                right: 0.75rem;
+            }
+    
+            .result-container {
+                padding: 1.25rem 1rem;
+            }
+    
+            .result-header {
+                margin-bottom: 0.75rem;
+            }
+    
+            #resultText {
+                margin-bottom: 2.5rem;
+            }
+    
+            .info-button {
+                bottom: 1rem;
+                right: 1rem;
+                width: 2.5rem;
+                height: 2.5rem;
+            }
+    
+            .modal-content {
+                padding: 1.5rem;
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="glass-card">
+            <h1 class="title">
+                <span class="emoji-float">🔒</span>
+                Secret Emoji Messenger
+                <span class="emoji-float">✨</span>
+            </h1>
+            
+            <p class="subtitle">
+                Transform your messages into innocent-looking emoji sequences. Perfect for sharing secret notes that hide in plain sight! ✨
+            </p>
+            
+            <form method="post" id="messageForm">
+                <div class="input-container">
+                    <textarea 
+                        id="textInput" 
+                        name="text" 
+                        rows="4" 
+                        placeholder="Type your secret message or paste encoded text here..."
+                        required
+                        onkeyup="updateCharCount(this)"
+                    ></textarea>
+                    <button type="button" class="clear-input" onclick="clearInput('textInput')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="character-count" id="inputCharCount">0 characters</div>
+                </div>
+                
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" onclick="pasteFromClipboard()">
+                        <i class="fas fa-paste"></i> Paste
+                    </button>
+                    <button type="submit" name="action" value="encode" class="btn btn-primary">
+                        <i class="fas fa-lock"></i> Encode
+                    </button>
+                    <button type="submit" name="action" value="decode" class="btn btn-success">
+                        <i class="fas fa-lock-open"></i> Decode
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="clearForm()">
+                        <i class="fas fa-trash"></i> Clear All
+                    </button>
+                </div>
+            </form>
+
+            {% if result %}
+            <div class="result-container" id="resultBox">
+                <div class="result-header">
+                    <h5 class="result-title">Your Message</h5>
+                    <div class="result-actions">
+                        <button class="icon-button" onclick="copyToClipboard()" title="Copy to clipboard">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        <button class="icon-button" onclick="clearResult()" title="Clear result">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <textarea id="resultText" rows="4" readonly>{{ result | safe }}</textarea>
+                <div class="character-count" id="resultCharCount">0 characters</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <button class="info-button" onclick="openModal()">
+        <i class="fas fa-info"></i>
+    </button>
+
+    <div class="modal" id="infoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">How It Works ✨</h2>
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3>Overview</h3>
+                <p>This app cleverly hides your messages within emoji sequences using Unicode variation selectors - making your secret messages appear as simple emoji strings to others! 🎭</p>
+
+                <h3>Encoding Messages</h3>
+                <p>1. Type your secret message in the input box<br>
+                2. Click the "Encode" button<br>
+                3. Copy the resulting emoji sequence<br>
+                Your message is now disguised as a random string of emojis! 🎯</p>
+
+                <h3>Decoding Messages</h3>
+                <p>1. Paste the emoji sequence you received<br>
+                2. Click the "Decode" button<br>
+                3. Read the hidden message<br>
+                Only people with access to this decoder can read your message! 🔓</p>
+
+                <h3>Technical Magic</h3>
+                <p>The app uses Unicode variation selectors to encode each character of your message within seemingly random emojis. While the emojis appear normal to others, they actually contain hidden data that this decoder can extract! 🪄</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        function copyToClipboard() {
+            var copyText = document.getElementById("resultText");
+            var tempTextArea = document.createElement("textarea");
+            tempTextArea.value = copyText.textContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempTextArea);
+            
+            showToast('Copied to clipboard!');
+        }
+
+        function pasteFromClipboard() {
+            navigator.clipboard.readText()
+                .then(function(text) {
+                    document.getElementById("textInput").value = text;
+                    updateCharCount(document.getElementById("textInput"));
+                })
+                .catch(function() {
+                    showToast('Paste failed. Please try manually using Ctrl+V.');
+                });
+        }
+
+        function clearInput(inputId) {
+            document.getElementById(inputId).value = '';
+            updateCharCount(document.getElementById(inputId));
+        }
+
+        function clearResult() {
+            const resultBox = document.getElementById('resultBox');
+            if (resultBox) {
+                resultBox.style.opacity = '0';
+                setTimeout(() => {
+                    resultBox.remove();
+                }, 300);
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('messageForm').reset();
+            clearResult();
+            updateCharCount(document.getElementById("textInput"));
+            showToast('All cleared!');
+        }
+
+        function updateCharCount(textarea) {
+            const id = textarea.id === 'textInput' ? 'inputCharCount' : 'resultCharCount';
+            const count = textarea.value.length;
+            document.getElementById(id).textContent = `${count} character${count !== 1 ? 's' : ''}`;
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        function openModal() {
+            const modal = document.getElementById('infoModal');
+            modal.style.display = 'block';
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('infoModal');
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('infoModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Initialize character counts
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCharCount(document.getElementById("textInput"));
+            const resultText = document.getElementById("resultText");
+            if (resultText) {
+                updateCharCount(resultText);
+            }
+        });
+    </script>
+</body>
+</html>
