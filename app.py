@@ -3,7 +3,8 @@ import random
 
 app = Flask(__name__)
 
-EMOJIS = ["😀", "😃", "😄", "😁", "😆", "🥰", "🤩", "😎", "👻", "🤖", "🐱", "🐶"]
+EMOJIS = ["😀", "😃", "😄", "😁", "😆", "🥰", "🤩", "😎", "👻", "🤖"]
+MAX_LENGTH = 5000
 
 def byte_to_variation_selector(byte):
     if 0 <= byte <= 15:
@@ -52,6 +53,9 @@ def index():
     result = ""
     if request.method == "POST":
         user_input = request.form.get("text", "")
+        if len(user_input) > MAX_LENGTH:
+            return render_template("index.html", result="Error: Input exceeds maximum length of 5000 characters")
+        
         action = request.form.get("action")
         if action == "encode":
             result = encode_message(user_input)

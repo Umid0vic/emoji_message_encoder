@@ -466,12 +466,13 @@
                         rows="4" 
                         placeholder="Type your secret message or paste encoded text here..."
                         required
+                        maxlength="5000"
                         onkeyup="updateCharCount(this)"
                     ></textarea>
                     <button type="button" class="clear-input" onclick="clearInput('textInput')">
                         <i class="fas fa-times"></i>
                     </button>
-                    <div class="character-count" id="inputCharCount">0 characters</div>
+                    <div class="character-count" id="inputCharCount">0 / 5000 characters</div>
                 </div>
                 
                 <div class="button-group">
@@ -595,7 +596,19 @@
         function updateCharCount(textarea) {
             const id = textarea.id === 'textInput' ? 'inputCharCount' : 'resultCharCount';
             const count = textarea.value.length;
-            document.getElementById(id).textContent = `${count} character${count !== 1 ? 's' : ''}`;
+            const maxLength = textarea.hasAttribute('maxlength') ? textarea.getAttribute('maxlength') : null;
+            
+            if (maxLength) {
+                document.getElementById(id).textContent = `${count} / ${maxLength} characters`;
+                // Add visual feedback when approaching limit
+                if (count > maxLength * 0.9) {
+                    document.getElementById(id).style.color = '#FF6B6B';
+                } else {
+                    document.getElementById(id).style.color = 'rgba(255, 255, 255, 0.5)';
+                }
+            } else {
+                document.getElementById(id).textContent = `${count} character${count !== 1 ? 's' : ''}`;
+            }
         }
 
         function showToast(message) {
@@ -609,7 +622,7 @@
 
         function openModal() {
             const modal = document.getElementById('infoModal');
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            document.body.style.overflow = 'hidden';
             modal.style.display = 'block';
             setTimeout(() => {
                 modal.classList.add('show');
@@ -618,7 +631,7 @@
 
         function closeModal() {
             const modal = document.getElementById('infoModal');
-            document.body.style.overflow = ''; // Restore scrolling
+            document.body.style.overflow = '';
             modal.classList.remove('show');
             setTimeout(() => {
                 modal.style.display = 'none';
