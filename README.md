@@ -2,20 +2,16 @@
 
 This is a very simple and fun Flask web application that encodes and decodes messages using emoji sequences. Hide your messages in plain sight by transforming text into a string of random emojis with hidden data!
 
-## Table of Contents
-
-- [Emoji Message Encoder](#emoji-message-encoder)
-  - [Table of Contents](#table-of-contents)
-  - [Features](#features)
-  - [Demo](#demo)
-  - [Installation](#installation)
-  - [Usage](#usage)
-
 ## Features
 
 - **Encode Messages:** Transform a plain text message into a seemingly random sequence of emojis.
 - **Decode Messages:** Reveal the hidden message from an emoji sequence.
 - **Web Interface:** A sleek, responsive UI built with HTML, CSS, and JavaScript.
+
+## Screenshot
+
+![Emoji Message Encoder Interface](docs/app-screenshot.png)
+*The Emoji Message Encoder web interface showing the encoding/decoding functionality*
 
 ## Demo
 
